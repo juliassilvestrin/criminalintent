@@ -11,7 +11,7 @@ export const themes = {
   text: '#000000',
   border: '#dddddd',
   button: '#757575',  
-  buttonText: '#ffffff',
+  buttonText: '#1a1818ff',
 },
   lightBlue: {
     name: 'Blue',

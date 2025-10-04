@@ -1,4 +1,14 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, Platform, } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Alert,
+  Platform,
+} from 'react-native';
 import { useState, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { getCrimeById, saveCrime, Crime } from '../utils/storage';
@@ -6,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
+import { ThemedButton } from '../components/ThemedButton';
 
 export default function Detail() {
   const { id } = useLocalSearchParams();
@@ -49,10 +60,7 @@ export default function Detail() {
       quality: 0.5,
     });
 
-    console.log('image picker', result);
-
     if (!result.canceled) {
-      console.log('photo uri:', result.assets[0].uri);
       setPhotoUri(result.assets[0].uri);
     }
   };
@@ -111,7 +119,7 @@ export default function Detail() {
       <View style={styles.inputGroup}>
         <Text style={[styles.label, { color: theme.text }]}>Details</Text>
         <TextInput
-          style={[styles.input, styles.textArea, { borderColor: theme.border, color: theme.text }]}
+          style={[styles.input, styles.textArea, { borderColor: theme.border, color: theme.text, backgroundColor: theme.card }]}
           value={details}
           onChangeText={setDetails}
           placeholder="What happened?"
@@ -121,14 +129,11 @@ export default function Detail() {
         />
       </View>
 
-      <TouchableOpacity
-        style={[styles.dateButton, { backgroundColor: theme.button }]}
+      <ThemedButton
+        title={date.toDateString().toUpperCase()}
         onPress={() => setShowDatePicker(true)}
-      >
-        <Text style={[styles.dateButtonText, { color: theme.buttonText }]}>
-          {date.toDateString().toUpperCase()}
-        </Text>
-      </TouchableOpacity>
+        style={styles.dateButton}
+      />
 
       {showDatePicker && (
         <DateTimePicker
@@ -149,9 +154,11 @@ export default function Detail() {
         <Text style={[styles.checkboxLabel, { color: theme.text }]}>Solved</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.saveButton, { backgroundColor: theme.button }]} onPress={handleSave}>
-        <Text style={[styles.saveButtonText, { color: theme.buttonText }]}>SAVE</Text>
-      </TouchableOpacity>
+      <ThemedButton 
+        title="SAVE" 
+        onPress={handleSave}
+        style={styles.saveButton}
+      />
     </ScrollView>
   );
 }
@@ -219,14 +226,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   dateButton: {
-    padding: 16,
-    borderRadius: 4,
-    alignItems: 'center',
     marginBottom: 20,
-  },
-  dateButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -246,13 +246,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   saveButton: {
-    padding: 16,
-    borderRadius: 4,
-    alignItems: 'center',
     marginBottom: 40,
-  },
-  saveButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
   },
 });

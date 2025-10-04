@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, StatusBar } from 'react-native';
 import { createNewCrime, saveCrime } from '../utils/storage';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,6 +9,11 @@ function LayoutContent() {
   const router = useRouter();
   const { theme } = useTheme();
 
+  // determine if current theme is light or dark
+  const isLightTheme = theme.background === '#ffffff' || 
+                       theme.background === '#e3f2fd' || 
+                       theme.background === '#e8f5e9';
+
   const handleAddCrime = async () => {
     const newCrime = createNewCrime();
     await saveCrime(newCrime);
@@ -16,48 +21,56 @@ function LayoutContent() {
   };
 
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.button,
-        },
-        headerTintColor: theme.buttonText,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-        title: 'Criminal Intent',
-      }}
-    >
-      <Stack.Screen
-        name="index"
-        options={{
-          headerRight: () => (
-            <>
-              <TouchableOpacity onPress={handleAddCrime} style={{ marginRight: 15 }}>
-               <Text style={{ fontSize: 36, color: theme.buttonText }}>+</Text>
-              </TouchableOpacity>
+    <>
+      <StatusBar 
+        barStyle={isLightTheme ? 'dark-content' : 'light-content'}
+        backgroundColor={theme.button}
+      />
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: theme.button,
+          },
+          headerTintColor: theme.buttonText,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'Criminal Intent',
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            headerRight: () => (
+              <>
+                <TouchableOpacity onPress={handleAddCrime} style={{ marginRight: 15 }}>
+                  <Text style={{ fontSize: 36, color: theme.buttonText }}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/settings')}>
+                  <MaterialCommunityIcons name="cog" size={28} color={theme.buttonText} />
+                </TouchableOpacity>
+              </>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="detail"
+          options={{
+            headerRight: () => (
               <TouchableOpacity onPress={() => router.push('/settings')}>
                 <MaterialCommunityIcons name="cog" size={28} color={theme.buttonText} />
               </TouchableOpacity>
-            </>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="detail"
-        options={{
-          headerRight: () => (
-            <TouchableOpacity onPress={() => router.push('/settings')}>
-              <MaterialCommunityIcons name="cog" size={28} color={theme.buttonText} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="settings"
-        options={{}}
-      />
-    </Stack>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerRight: () => null,
+          }}
+        />
+      </Stack>
+    </>
   );
 }
 

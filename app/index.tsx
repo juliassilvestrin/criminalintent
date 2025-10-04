@@ -1,9 +1,11 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { getCrimes, Crime } from '../utils/storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
+import { ThemedView } from '../components/ThemedView';
+import { ThemedText } from '../components/ThemedText';
 
 export default function Index() {
   const [crimes, setCrimes] = useState<Crime[]>([]);
@@ -26,30 +28,30 @@ export default function Index() {
   // render each crime item in the list
   const renderItem = ({ item }: { item: Crime }) => (
     <TouchableOpacity
-      style={[styles.crimeItem, { backgroundColor: theme.card, borderColor: theme.border }]}
+      style={[styles.crimeItem, { backgroundColor: theme.button, borderColor: theme.border }]}
       onPress={() => router.push(`/detail?id=${item.id}`)}
     >
       <View style={styles.crimeContent}>
-        <Text style={[styles.crimeTitle, { color: theme.text }]}>{item.title || 'Untitled Crime'}</Text>
-        <Text style={[styles.crimeDate, { color: theme.text, opacity: 0.7 }]}>
+        <ThemedText style={[styles.crimeTitle, { color: theme.buttonText }]}>{item.title || 'Untitled Crime'}</ThemedText>
+        <ThemedText style={[styles.crimeDate, { color: theme.buttonText, opacity: 0.7 }]}>
           {new Date(item.date).toLocaleDateString()}
-        </Text>
+        </ThemedText>
       </View>
       {item.solved && (
-        <MaterialCommunityIcons name="handcuffs" size={24} color={theme.text} />
+        <MaterialCommunityIcons name="handcuffs" size={24} color={theme.buttonText} />
       )}
     </TouchableOpacity>
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <ThemedView style={styles.container}>
       <FlatList
         data={crimes}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
       />
-    </View>
+    </ThemedView>
   );
 }
 
